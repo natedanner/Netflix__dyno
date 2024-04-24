@@ -43,8 +43,8 @@ public class SimpleAsyncConnectionPoolImpl<CL> implements HostConnectionPool<CL>
     private final ConnectionPoolMonitor cpMonitor;
 
     // state to track the connections being used
-    private final CircularList<Connection<CL>> rrSelector = new CircularList<Connection<CL>>(new ArrayList<Connection<CL>>());
-    private final ConcurrentHashMap<Connection<CL>, Connection<CL>> connMap = new ConcurrentHashMap<Connection<CL>, Connection<CL>>();
+    private final CircularList<Connection<CL>> rrSelector = new CircularList<>(new ArrayList<Connection<CL>>());
+    private final ConcurrentHashMap<Connection<CL>, Connection<CL>> connMap = new ConcurrentHashMap<>();
 
     // Tracking state of host connection pool.
     private final AtomicBoolean active = new AtomicBoolean(false);
@@ -104,7 +104,6 @@ public class SimpleAsyncConnectionPoolImpl<CL> implements HostConnectionPool<CL>
         } catch (Exception e) {
             Logger.error("Failed to close connection for host: " + host, e);
             return false;
-        } finally {
         }
     }
 
@@ -140,7 +139,7 @@ public class SimpleAsyncConnectionPoolImpl<CL> implements HostConnectionPool<CL>
             return;
         }
 
-        if (!(reconnecting.compareAndSet(false, true))) {
+        if (!reconnecting.compareAndSet(false, true)) {
             Logger.info("Pool already reconnecting, ignoring reconnect connections request");
             return;
         }
